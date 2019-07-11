@@ -3,19 +3,32 @@ import "./Index.css";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import { fetchLocations } from "../actions/postAction";
+import { fetchLocations } from "../../actions/locationAction";
 
-import { Card, Col, Row, Typography } from "antd";
+import { Card, Col, Row, Typography} from "antd";
 
 // components
 import SearchBar from "./SearchBar";
 import Locations from "./Locations";
 
+
 const { Title } = Typography;
 
 class Index extends React.Component {
+  componentWillMount() {
+    this.props.fetchLocations();
+  }
+
   onChange = e => {
-    if (e.target.value != "") this.props.fetchLocations(e.target.value);
+    if (e.target.value != "") {
+      this.props.fetchLocations(e.target.value);
+    } else {
+      this.props.fetchLocations();
+    }
+  };
+
+  viewForecast = woeid => {
+    this.props.history.push(`/weather_forecast/${woeid}`);
   };
 
   render() {
@@ -31,7 +44,11 @@ class Index extends React.Component {
             bordered={false}
           >
             <SearchBar onChange={this.onChange} />
-            <Locations locations={this.props.locations} />
+            <Locations
+              locations={this.props.locations}
+              viewForecast={woeid => this.viewForecast(woeid)}
+              loading={this.props.loading}
+            />
           </Card>
         </Col>
       </Row>
@@ -41,11 +58,13 @@ class Index extends React.Component {
 
 Index.propTypes = {
   fetchLocations: PropTypes.func.isRequired,
-  locations: PropTypes.array.isRequired
+  locations: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
-  locations: state.locations.items
+  locations: state.locations.items,
+  loading: state.locations.loading
 });
 
 export default connect(

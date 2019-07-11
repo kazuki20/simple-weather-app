@@ -33,8 +33,8 @@ class Index extends React.Component {
 
   render() {
     return (
-      <Row gutter={16} type="flex" justify="center">
-        <Col span={8}>
+      <Row type="flex" justify="center">
+        <Col xs={24} sm={20} md={18} lg={8}>
           <Card
             title={
               <Title className="text-center" level={3}>
